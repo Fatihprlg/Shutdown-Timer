@@ -13,10 +13,11 @@ namespace ShutdownTimer
 {
     public partial class Form1 : Form
     {
-
+        int hours, mins, secs;
         public Form1()
         {
             InitializeComponent();
+            
         }
 
         private void startBtn_Click(object sender, EventArgs e)
@@ -24,10 +25,10 @@ namespace ShutdownTimer
             if (!string.IsNullOrEmpty(counterTxt.Text))
             {
                 string[] texts = counterTxt.Text.Split(':');
-                int hours = string.IsNullOrWhiteSpace(texts[0]) ? 0 : Convert.ToInt32(texts[0]);
-                int mins = string.IsNullOrWhiteSpace(texts[1]) ? 0 : Convert.ToInt32(texts[1]);
-                int secs = string.IsNullOrWhiteSpace(texts[2]) ? 0 : Convert.ToInt32(texts[2]);
-                counterLbl.Text = hours.ToString() + ':' + mins.ToString() + ':' + secs.ToString();
+                hours = string.IsNullOrWhiteSpace(texts[0]) ? 0 : Convert.ToInt32(texts[0]);
+                mins = string.IsNullOrWhiteSpace(texts[1]) ? 0 : Convert.ToInt32(texts[1]);
+                secs = string.IsNullOrWhiteSpace(texts[2]) ? 0 : Convert.ToInt32(texts[2]);
+                counterLbl.Text = fill(hours) + ':' + fill(mins) + ':' + fill(secs);
                 int totalTimeInSec = secs + (60 * mins) + (60 * 60 * hours);
                 Process process = new Process();
                 ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -37,6 +38,8 @@ namespace ShutdownTimer
                 process.StartInfo = startInfo;
                 process.Start();
                 timer1.Start();
+                counterTxt.ResetText();
+                
             }
         }
 
@@ -55,13 +58,12 @@ namespace ShutdownTimer
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            string[] texts = counterLbl.Text.Split(':');
-            int hours = Convert.ToInt32(texts[0]);
-            int mins = Convert.ToInt32(texts[1]);
-            int secs = Convert.ToInt32(texts[2]);
+            /*string[] texts = counterLbl.Text.Split(':');
+            int hours = string.IsNullOrWhiteSpace(texts[0]) ? 0 : Convert.ToInt32(texts[0]);
+            int mins = string.IsNullOrWhiteSpace(texts[1]) ? 0 : Convert.ToInt32(texts[1]);
+            int secs = string.IsNullOrWhiteSpace(texts[2]) ? 0 : Convert.ToInt32(texts[2]);*/
             if (counterLbl.Text != "00:00:00")
             {
-                secs--;
                 if (secs == 0 && mins != 0)
                 {
                     mins--;
@@ -73,6 +75,7 @@ namespace ShutdownTimer
                     mins = 59;
                 }
                 counterLbl.Text = fill(hours) + ':' + fill(mins) + ':' + fill(secs);
+                secs--;
             }
         }
         private string fill(int i)
